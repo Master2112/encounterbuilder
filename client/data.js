@@ -2,7 +2,8 @@ var data =
 {
     options:
     {
-        swarmMode: true, //True means a larger more balanced force, while false often generates a small and varied group
+        swarmMode: false, //True means a larger more balanced force, while false often generates a small and varied group
+        groups: 3 //amount of subgroups in the generated force. Grouped for similarity.
     },
     party: 
     [
@@ -82,6 +83,11 @@ var data =
                     name: "shortsword",
                     range: 5,
                     damage: 6
+                },
+                {
+                    name: "Shortbow",
+                    range: 60,
+                    damage: 6
                 }
             ]
         },
@@ -118,6 +124,11 @@ var data =
                     name: "club",
                     range: 5,
                     damage: 15
+                },
+                {
+                    name: "Shortbow",
+                    range: 60,
+                    damage: 6
                 }
             ]
         },
@@ -127,9 +138,14 @@ var data =
             equipment: 
             [
                 {
-                    name: "club",
+                    name: "Longsword",
                     range: 5,
                     damage: 17
+                },
+                {
+                    name: "Crossbow",
+                    range: 120,
+                    damage: 8
                 }
             ]
         },

@@ -11,11 +11,12 @@ $.ajax({
 
         var data = msg.responseJSON;
 
-        $("body").append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:412px;height:80px;background-color: ' + intToRGB(hashCode("stats")) + '">' + 
+        $("body").append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:412px;height:100px;background-color: ' + intToRGB(hashCode("stats")) + '">' + 
         "Party HP: " + data.data.partyHP + "<br>" +
         "Party Avg. Damage: " + data.data.partyAvgDamage + "<br>" +
         "Generated Force HP: " + data.data.generatedForceHP + "<br>" +
         "Generated Force Avg. Damage: " + data.data.generatedForceAvgDamage + "<br>" +
+        "Generated Force Avg. Range: " + data.data.generatedForceAvgRange + "<br>" +
         '</div>')
 
         RenderForce(msg.responseJSON);
@@ -30,6 +31,7 @@ function RenderForce(data)
         data.generatedForce[i].name + "<br>" +
         data.generatedForce[i].hp + "HP<br>" +
         data.generatedForce[i].avgDamage + " average damage<br>" +
+        "Range: " + data.generatedForce[i].range.min + "-" + data.generatedForce[i].range.max + " (" + data.generatedForce[i].range.average + ")<br>" +
         '</div>')
     }
 }
