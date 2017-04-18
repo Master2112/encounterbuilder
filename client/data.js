@@ -104,6 +104,18 @@ var data =
             ]
         },
         {
+            name: "Rat",
+            hp: 4,
+            equipment: 
+            [
+                {
+                    name: "Bite",
+                    range: 1,
+                    damage: 1
+                }
+            ]
+        },
+        {
             name: "Wolf",
             hp: 10,
             equipment: 

@@ -4,7 +4,18 @@ $(document).ready(function(){
 });
 function sendRequestButton()
 {
-    LoadData($("#input").val());
+    $("#output").slideUp(400, function()
+    {
+        LoadData($("#input").val());
+
+        $("#output").html("");
+
+                $("#output").append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:412px;height:150px;background-color: ' + intToRGB(hashCode("stats")) + '">' + 
+                "<h2>Error</h2><br>" +
+                "Error: Timed out, probably no suitable opposition could be created.<br>" +
+                "Cause: Not enough units weak/strong enough to oppose party were found.<br>" +
+                '</div>');
+    });
 }
 
 function hideInput()
@@ -35,6 +46,7 @@ function LoadData(dataJson)
             console.log("received:");
             console.log(msg.responseJSON);
             console.log(msg.responseText);
+            $("#output").slideDown();
 
             if (msg.responseJSON.error)
             {
