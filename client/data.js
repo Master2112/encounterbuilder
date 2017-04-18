@@ -3,7 +3,9 @@ var data =
     options:
     {
         swarmMode: false, 
-        groups: 3 //amount of subgroups in the generated force. Grouped for similarity.
+        groups: 3, //amount of subgroups in the generated force. Grouped for similarity.
+        attackPowerUpperRangePercentage: 7, //Higher means harder for party
+        attackPowerLowerRangePercentage: 0.1 //Lower means easier for party
     },
     party: 
     [

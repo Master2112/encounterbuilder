@@ -41,6 +41,10 @@ try
     $result->data->generatedForceAvgDamage = GetPartyDamageAverage($result->generatedForce);
     $result->data->generatedForceAvgRange = GetPartyRangeAverage($result->generatedForce);
 
+    $rangeAbove = $options->attackPowerUpperRangePercentage;
+    $rangeBelow = $options->attackPowerLowerRangePercentage;
+
+    $result->data->options = $options;
 
     if (!isset($options->groups))
         $options->groups = 1;
@@ -86,20 +90,24 @@ function GetGroupFromParty($party, $groupNum)
     return $group;
 }
 
-function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
+function GenerateArmy($unitsOriginal, $partyHP, $partyAvgDamage, $options)
 {
+    global $party, $rangeAbove, $rangeBelow;
+
     $i = -1;
     $removedFirst = false;
     $force = [];
 
     $maxIterations = 1000;
     $iterations = 0;
+    $avgUnitDamage = GetPartyDamageAverage($unitsOriginal);
+
+    $units = $unitsOriginal;//FilterStrongAndWeakFromParty($unitsOriginal, $party, $rangeBelow, $rangeAbove);
 
     while(GetPartyHP($force) < $partyHP && $iterations <= $maxIterations)
     {
         $iterations++;
         $dmg = GetPartyDamageAverage($force);
-        $avgUnitDamage = GetPartyDamageAverage($units);
         
         $maxTries = 100;
 
@@ -174,6 +182,30 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
     }
 
     return $force;
+}
+
+function FilterStrongAndWeakFromParty($party, $opposition, $rangeBelow, $rangeAbove)
+{
+    global $options;
+
+    $rangeBelow = max($rangeBelow, 0);
+    $rangeAbove = max($rangeAbove, 0);
+
+    $avgDamage = GetPartyDamageAverage($opposition);
+
+    $result = [];
+
+    for ($i = 0; $i < count($party); $i++)
+    {
+        if ($party[$i]->avgDamage < $avgDamage * (1 + $rangeAbove) && $party[$i]->avgDamage > $avgDamage * $rangeBelow)
+        {
+            array_push($result, $party[$i]);
+        }
+    }
+
+    $options->unitsInRange = $result;
+
+    return $result;
 }
 
 function GetLowestDamageMember($party)
