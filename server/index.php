@@ -129,7 +129,7 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
                     $added = true;
                     break;
                 }
-                else if ($units[$unitIndex]->avgDamage > $avgUnitDamage && $units[$unitIndex]->avgDamage < ($partyAvgDamage * 1.5) && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
+                else if ($units[$unitIndex]->avgDamage >= $avgUnitDamage && $units[$unitIndex]->avgDamage < ($partyAvgDamage * 1.5) && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
                 {
                     array_push($force, $units[$unitIndex]);
                     $added = true;
