@@ -9,7 +9,7 @@ var data =
     [
         {
             name: "Bob",
-            hp: 150,
+            hp: 250,
             equipment: 
             [
                 {
@@ -26,7 +26,7 @@ var data =
         },
         {
             name: "Sjon",
-            hp: 70,
+            hp: 170,
             equipment: 
             [
                 {

@@ -2,38 +2,87 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type:application/json");
 
-$json = file_get_contents("php://input");
+set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) {
+    // error was suppressed with the @-operator
+    if (0 === error_reporting()) {
+        return false;
+    }
 
-$data = json_decode($json);
+    throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
 
-$options = $data->options;
-$party = $data->party;
-$unitTypes = $data->availableUnits;
+try
+{
+    $json = file_get_contents("php://input");
 
-$partyHP = GetPartyHP($party);
-$partyAvgDamage = GetPartyDamageAverage($party);
-$partyAvgRange = GetPartyRangeAverage($party);
-SetUnitDamageAverage($unitTypes);
-GetPartyRangeAverage($unitTypes);
+    $data = json_decode($json);
 
-$result = new stdClass();
+    $options = $data->options;
+    $party = $data->party;
+    $unitTypes = $data->availableUnits;
 
-$result->data = new stdClass();
-$result->data->partyHP = $partyHP;
-$result->data->partyAvgDamage = $partyAvgDamage;
+    $partyHP = GetPartyHP($party);
+    $partyAvgDamage = GetPartyDamageAverage($party);
+    $partyAvgRange = GetPartyRangeAverage($party);
+    SetUnitDamageAverage($unitTypes);
+    GetPartyRangeAverage($unitTypes);
 
-$result->generatedForce = GenerateArmy($unitTypes, $partyHP, $partyAvgDamage, $options);
+    $result = new stdClass();
 
-$result->data->generatedForceHP = GetPartyHP($result->generatedForce);
-$result->data->generatedForceAvgDamage = GetPartyDamageAverage($result->generatedForce);
-$result->data->generatedForceAvgRange = GetPartyRangeAverage($result->generatedForce);
+    $result->data = new stdClass();
+    $result->data->partyHP = $partyHP;
+    $result->data->partyAvgDamage = $partyAvgDamage;
 
-if (isset($options->groups))
+    $result->generatedForce = GenerateArmy($unitTypes, $partyHP, $partyAvgDamage, $options);
+
+    $result->data->generatedForceHP = GetPartyHP($result->generatedForce);
+    $result->data->generatedForceAvgDamage = GetPartyDamageAverage($result->generatedForce);
+    $result->data->generatedForceAvgRange = GetPartyRangeAverage($result->generatedForce);
+
+
+    if (!isset($options->groups))
+        $options->groups = 1;
+
     SetUnitGroup($result->generatedForce, $options->groups);
 
-$result->data->input = $options;
+    $result->data->groups = [];
 
-echo json_encode($result);
+    for ($i = 0; $i < $options->groups; $i++)
+    {
+        $groupUnits = GetGroupFromParty($result->generatedForce, $i);
+
+        $result->data->groups[$i] = new stdClass();
+        $result->data->groups[$i]->HP = GetPartyHP($groupUnits);
+        $result->data->groups[$i]->avgDamage = GetPartyDamageAverage($groupUnits);
+        $result->data->groups[$i]->avgRange = GetPartyRangeAverage($groupUnits);
+    }
+
+    $result->data->input = $options;
+
+    echo json_encode($result);
+}
+catch (Exception $e)
+{
+    header("HTTP/1.1 400 Bad Request");
+
+    $res = new stdClass();
+    $res->error = $e->getMessage();
+    $res->cause = "Missing parameter in input JSON";
+    echo json_encode($res);
+}
+
+function GetGroupFromParty($party, $groupNum)
+{
+    $group = [];
+
+    for ($i = 0; $i < count($party); $i++)
+    {
+        if ($party[$i]->group == $groupNum)
+            array_push($group, $party[$i]);
+    }
+
+    return $group;
+}
 
 function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
 {
