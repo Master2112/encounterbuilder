@@ -27,7 +27,7 @@ function LoadData(dataJson)
 
     $.ajax({
         type: "POST",
-        url: 'http://localhost/encounterbuilder/server/',
+        url: '../server/',
         dataType: "json",
         data: dataJson,
         complete: function(msg)

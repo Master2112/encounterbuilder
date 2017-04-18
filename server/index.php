@@ -97,6 +97,7 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
     {
         $iterations++;
         $dmg = GetPartyDamageAverage($force);
+        $avgUnitDamage = GetPartyDamageAverage($units);
         
         $maxTries = 100;
 
@@ -120,7 +121,7 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
 
                 $unitIndex = array_rand($units); //rand(0, count($units) - 1); 
 
-                if ($units[$unitIndex]->avgDamage < $partyAvgDamage && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
+                if ($units[$unitIndex]->avgDamage > $avgUnitDamage && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
                 {
                     array_push($force, $units[$unitIndex]);
                     $added = true;
@@ -148,7 +149,7 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
 
                 $unitIndex = array_rand($units); //rand(0, count($units) - 1); 
 
-                if ($units[$unitIndex]->avgDamage > $partyAvgDamage && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
+                if ($units[$unitIndex]->avgDamage < $partyAvgDamage && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
                 {
                     array_push($force, $units[$unitIndex]);
                     $added = true;
