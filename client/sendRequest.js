@@ -19,6 +19,11 @@ $.ajax({
         "Generated Force Avg. Range: " + data.data.generatedForceAvgRange + "<br>" +
         '</div>')
 
+        for (i = 0; i < data.data.input.groups; i++)
+        {
+            $("body").append('<div style="width: calc(80%);min-height:20%;margin:1%;border: 1px solid black;float:left;background-color: ' + intToRGB(hashCode("group" + i + 1000 * i)) + ';" id="group' + i + '"><h2>Group ' + i + '</h2></div>');    
+        }
+
         RenderForce(msg.responseJSON);
     }
 });
@@ -27,7 +32,7 @@ function RenderForce(data)
 {
     for (var i = 0; i < data.generatedForce.length; i++)
     {
-        $("body").append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:200px;height:80px;background-color: ' + intToRGB(hashCode(data.generatedForce[i].name)) + '">' + 
+        $("#group" + data.generatedForce[i].group).append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:200px;height:80px;background-color: ' + intToRGB(hashCode(data.generatedForce[i].name + "color")) + '">' + 
         data.generatedForce[i].name + "<br>" +
         data.generatedForce[i].hp + "HP<br>" +
         data.generatedForce[i].avgDamage + " average damage<br>" +

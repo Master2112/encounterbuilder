@@ -28,10 +28,17 @@ $result->data->generatedForceHP = GetPartyHP($result->generatedForce);
 $result->data->generatedForceAvgDamage = GetPartyDamageAverage($result->generatedForce);
 $result->data->generatedForceAvgRange = GetPartyRangeAverage($result->generatedForce);
 
+if (isset($options->groups))
+    SetUnitGroup($result->generatedForce, $options->groups);
+
+$result->data->input = $options;
+
 echo json_encode($result);
 
 function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
 {
+    $i = -1;
+    $removedFirst = false;
     $force = [];
 
     $maxIterations = 1000;
@@ -44,7 +51,7 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
         
         $maxTries = 100;
 
-        if ($dmg * 1.1 > $partyAvgDamage)
+        if ($dmg * 1.1 < $partyAvgDamage)
         {
             if (!$options->swarmMode) 
             {
@@ -62,11 +69,11 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
             {
                 $tries++;
 
-                $i = rand(0, count($units) - 1);
+                $unitIndex = array_rand($units); //rand(0, count($units) - 1); 
 
-                if ($units[$i]->avgDamage < $partyAvgDamage && GetPartyHP($force) + $units[$i]->hp < $partyHP * 1.1)
+                if ($units[$unitIndex]->avgDamage < $partyAvgDamage && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
                 {
-                    array_push($force, $units[$i]);
+                    array_push($force, $units[$unitIndex]);
                     $added = true;
                     break;
                 }
@@ -90,11 +97,11 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
             {
                 $tries++;
 
-                $i = rand(0, count($units) - 1);
+                $unitIndex = array_rand($units); //rand(0, count($units) - 1); 
 
-                if ($units[$i]->avgDamage > $partyAvgDamage && GetPartyHP($force) + $units[$i]->hp < $partyHP * 1.1)
+                if ($units[$unitIndex]->avgDamage > $partyAvgDamage && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
                 {
-                    array_push($force, $units[$i]);
+                    array_push($force, $units[$unitIndex]);
                     $added = true;
                     break;
                 }
@@ -107,6 +114,8 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
 
 function CompareUnit($a, $b)
 {
+    global $partyAvgDamage;
+
     if ($a->hp == $b->hp)
     {
         return abs($b->avgDamage - $partyAvgDamage) - abs($a->avgDamage - $partyAvgDamage);
@@ -119,6 +128,8 @@ function CompareUnit($a, $b)
 
 function CompareUnitSwarm($a, $b)
 {
+    global $partyAvgDamage;
+
     if ($a->hp == $b->hp)
     {
         return abs($b->avgDamage - $partyAvgDamage) - abs($a->avgDamage - $partyAvgDamage);
@@ -196,7 +207,7 @@ function GetPartyRangeAverage($party)
         
         $party[$i]->range->average = $memberAvg / $e;
 
-        $range += $party[$i]->avgDamage;
+        $range += $party[$i]->range->average;
     }
     if ($i == 0)
         return 0;
@@ -210,11 +221,17 @@ function SetUnitGroup($party, $groupAmount)
 
     for ($i = 0; $i < $groupAmount; $i++)
     {
-        $pI = rand(0, count($party) - 1);
-        
-        if (!isset ($party[$pI]->group))
+        $set = false;
+
+        while (!$set)
         {
-            $party[$pI]->group = $i;
+            $pI = rand(0, count($party) - 1);
+            
+            if (!isset ($party[$pI]->group))
+            {
+                $party[$pI]->group = $i;
+                $set = true;
+            }
         }
     }
 
@@ -248,7 +265,7 @@ function SetUnitGroup($party, $groupAmount)
 
             for ($n = 0; $n < count($groups[$i]->positions[0]); $n++)
             {
-                array_push($groups[$i]->center[$n], 0);
+                $groups[$i]->center[$n] =  0;
             }
 
             for ($p = 0; $p < count($groups[$i]->positions); $p++)

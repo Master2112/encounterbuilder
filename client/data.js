@@ -2,7 +2,7 @@ var data =
 {
     options:
     {
-        swarmMode: false, //True means a larger more balanced force, while false often generates a small and varied group
+        swarmMode: false, 
         groups: 3 //amount of subgroups in the generated force. Grouped for similarity.
     },
     party: 
@@ -55,7 +55,7 @@ var data =
         },
         {
             name: "Blubber",
-            hp: 90,
+            hp: 190,
             equipment: 
             [
                 {
@@ -116,6 +116,18 @@ var data =
             ]
         },
         {
+            name: "Bear",
+            hp: 30,
+            equipment: 
+            [
+                {
+                    name: "teeth",
+                    range: 5,
+                    damage: 10
+                }
+            ]
+        },
+        {
             name: "Hobgoblin",
             hp: 30,
             equipment: 
@@ -133,6 +145,23 @@ var data =
             ]
         },
         {
+            name: "Wizard",
+            hp: 40,
+            equipment: 
+            [
+                {
+                    name: "Staff",
+                    range: 120,
+                    damage: 20
+                },
+                {
+                    name: "Dagger",
+                    range: 5,
+                    damage: 4
+                }
+            ]
+        },
+        {
             name: "Knight",
             hp: 50,
             equipment: 
@@ -146,6 +175,40 @@ var data =
                     name: "Crossbow",
                     range: 120,
                     damage: 8
+                }
+            ]
+        },
+        {
+            name: "Elite Knight",
+            hp: 100,
+            equipment: 
+            [
+                {
+                    name: "Greatsword",
+                    range: 15,
+                    damage: 17
+                },
+                {
+                    name: "Crossbow",
+                    range: 120,
+                    damage: 8
+                }
+            ]
+        },
+        {
+            name: "Wyvern",
+            hp: 150,
+            equipment: 
+            [
+                {
+                    name: "Poison Tail",
+                    range: 10,
+                    damage: 30
+                },
+                {
+                    name: "Claw",
+                    range: 5,
+                    damage: 15
                 }
             ]
         },
