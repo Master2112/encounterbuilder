@@ -11,6 +11,8 @@ set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontex
     throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
 });
 
+$options;
+
 try
 {
     $json = file_get_contents("php://input");
@@ -19,6 +21,7 @@ try
 
     $data = json_decode($json);
 
+    $removedUnits = [];
     $options = $data->options;
     $party = $data->party;
     $unitTypes = $data->availableUnits;
@@ -41,15 +44,25 @@ try
     $result->data->generatedForceAvgDamage = GetPartyDamageAverage($result->generatedForce);
     $result->data->generatedForceAvgRange = GetPartyRangeAverage($result->generatedForce);
 
-    $rangeAbove = $options->attackPowerUpperRangePercentage;
-    $rangeBelow = $options->attackPowerLowerRangePercentage;
+    $options->attackPowerUpperRangePercentage;
+    $options->attackPowerLowerRangePercentage;
 
-    $result->data->options = $options;
+    $result->data->removedUnits = $removedUnits;
 
     if (!isset($options->groups))
         $options->groups = 1;
 
-    SetUnitGroup($result->generatedForce, $options->groups);
+    if ($options->groups > 1)
+    {
+        SetUnitGroup($result->generatedForce, $options->groups);
+    }
+    else
+    {
+        for ($i = 0; $i < count($result->generatedForce);  $i++)
+        {
+            $result->generatedForce[$i]->group = 0;
+        }
+    }
 
     $result->data->groups = [];
 
@@ -74,6 +87,7 @@ catch (Exception $e)
     $res = new stdClass();
     $res->error = $e->getMessage() . ":" . $e->getLine();
     $res->cause = "Missing/incorrect parameter in input JSON";
+    $res->debug = $options;
     echo json_encode($res);
 }
 
@@ -90,9 +104,9 @@ function GetGroupFromParty($party, $groupNum)
     return $group;
 }
 
-function GenerateArmy($unitsOriginal, $partyHP, $partyAvgDamage, $options)
+function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
 {
-    global $party, $rangeAbove, $rangeBelow;
+    global $party, $rangeAbove, $rangeBelow, $options;
 
     $i = -1;
     $removedFirst = false;
@@ -100,9 +114,11 @@ function GenerateArmy($unitsOriginal, $partyHP, $partyAvgDamage, $options)
 
     $maxIterations = 1000;
     $iterations = 0;
-    $avgUnitDamage = GetPartyDamageAverage($unitsOriginal);
 
-    $units = $unitsOriginal;//FilterStrongAndWeakFromParty($unitsOriginal, $party, $rangeBelow, $rangeAbove);
+    $units = FilterStrongAndWeakFromParty($units, $party);
+
+    $avgUnitDamage = GetPartyDamageAverage($units);
+    $weakestUnit = GetLowestDamageMember($units);
 
     while(GetPartyHP($force) < $partyHP && $iterations <= $maxIterations)
     {
@@ -131,13 +147,13 @@ function GenerateArmy($unitsOriginal, $partyHP, $partyAvgDamage, $options)
 
                 $unitIndex = array_rand($units); //rand(0, count($units) - 1); 
 
-                if (GetLowestDamageMember($units)->avgDamage > ($partyAvgDamage * 1.5))
+                if ($weakestUnit != null && $weakestUnit->avgDamage > ($partyAvgDamage * 1.5))
                 {
-                    array_push($force, GetLowestDamageMember($units));
+                    array_push($force, $weakestUnit);
                     $added = true;
                     break;
                 }
-                else if ($units[$unitIndex]->avgDamage >= $avgUnitDamage && $units[$unitIndex]->avgDamage < ($partyAvgDamage * 1.5) && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
+                else if ($units[$unitIndex]->avgDamage >= $avgUnitDamage && GetPartyHP($force) + $units[$unitIndex]->hp < $partyHP * 1.1)
                 {
                     array_push($force, $units[$unitIndex]);
                     $added = true;
@@ -165,9 +181,9 @@ function GenerateArmy($unitsOriginal, $partyHP, $partyAvgDamage, $options)
 
                 $unitIndex = array_rand($units); //rand(0, count($units) - 1); 
 
-                if (GetLowestDamageMember($units)->avgDamage > ($partyAvgDamage * 1.5))
+                if ($weakestUnit->avgDamage > ($partyAvgDamage * 1.5))
                 {
-                    array_push($force, GetLowestDamageMember($units));
+                    array_push($force, $weakestUnit);
                     $added = true;
                     break;
                 }
@@ -184,28 +200,55 @@ function GenerateArmy($unitsOriginal, $partyHP, $partyAvgDamage, $options)
     return $force;
 }
 
-function FilterStrongAndWeakFromParty($party, $opposition, $rangeBelow, $rangeAbove)
+function FilterStrongAndWeakFromParty($party, $opposition)
 {
-    global $options;
-
-    $rangeBelow = max($rangeBelow, 0);
-    $rangeAbove = max($rangeAbove, 0);
+    global $removedUnits, $options;
 
     $avgDamage = GetPartyDamageAverage($opposition);
 
     $result = [];
 
+    $rangeAbove = $options->attackPowerUpperRangePercentage;
+    $rangeBelow = $options->attackPowerLowerRangePercentage;
+
+    $rangeBelow = max($rangeBelow, 0);
+    $rangeAbove = max($rangeAbove, 0);
+    
+    $maxDamage = $avgDamage * (1 + $rangeAbove);
+    $minDamage = $avgDamage * $rangeBelow;
+
+    $options->limits = new stdClass();
+
+    $options->limits->maxDamage = $maxDamage;
+    $options->limits->minDamage = $minDamage;
+
+    $options->limits->percentages = new stdClass();
+
+    $options->limits->percentages->min = $rangeBelow;
+    $options->limits->percentages->max = $rangeAbove;
+
     for ($i = 0; $i < count($party); $i++)
     {
-        if ($party[$i]->avgDamage < $avgDamage * (1 + $rangeAbove) && $party[$i]->avgDamage > $avgDamage * $rangeBelow)
+        $tooStrong = $party[$i]->avgDamage > $maxDamage;
+
+        $tooWeak = $party[$i]->avgDamage < $minDamage;
+
+        if ($tooStrong || $tooWeak)
         {
             array_push($result, $party[$i]);
+
+            $party[$i]->removedReason = $tooStrong? "Too Strong" : "Too Weak";
         }
     }
 
-    $options->unitsInRange = $result;
+    for ($i = 0; $i < count($result); $i++)
+    {
+        $index = array_search($result[$i], $party, true);
+        array_push($removedUnits, $result[$i]);
+        array_splice($party, $index, 1);
+    }
 
-    return $result;
+    return $party;
 }
 
 function GetLowestDamageMember($party)
@@ -215,7 +258,7 @@ function GetLowestDamageMember($party)
     global $lowestDamageUnit;
     global $lowestDamageSet;
 
-    if ($lowestDamageSet)
+    if ($lowestDamageSet && isset($lowestDamageUnit) && $lowestDamageUnit != null)
     {
         return $lowestDamageUnit;
     }

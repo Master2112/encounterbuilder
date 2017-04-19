@@ -45,7 +45,7 @@ function LoadData(dataJson)
         {
             console.log("received:");
             console.log(msg.responseJSON);
-            console.log(msg.responseText);
+            !msg.responseJSON && console.log(msg.responseText);
             $("#output").slideDown();
 
             if (msg.responseJSON.error)
@@ -85,6 +85,23 @@ function LoadData(dataJson)
                 }
 
                 RenderForce(msg.responseJSON);
+                
+                $("#output").append('<div style="width: calc(80%);min-height:20%;margin:1%;border: 1px solid black;float:left;background-color: ' + intToRGB(hashCode("group" + i + 1000 * i)) + ';" id="removed"></div>');    
+
+                $("#removed").append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:calc(100% - 12px);height:50px;background-color: ' + intToRGB(hashCode("stats" + i + 1000 * i)) + '">' + 
+                    "<h2>Removed units</h2>" +
+                    "</div><br>")
+
+                for (var i = 0; i < data.data.removedUnits.length; i++)
+                {
+                    $("#removed").append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:200px;height:90px;background-color: ' + intToRGB(hashCode(data.data.removedUnits[i].name + "color")) + '">' + 
+                    data.data.removedUnits[i].name + "<br>" +
+                    data.data.removedUnits[i].hp + "HP<br>" +
+                    data.data.removedUnits[i].avgDamage + " average damage<br>" +
+                    "Range: " + data.data.removedUnits[i].range.min + "-" + data.data.removedUnits[i].range.max + " (" + data.data.removedUnits[i].range.average + ")<br>" +
+                    "Removed because: " + data.data.removedUnits[i].removedReason +
+                    '</div>')
+                }
             }
         }
     });
