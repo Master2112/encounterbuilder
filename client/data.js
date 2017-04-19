@@ -4,7 +4,7 @@ var data =
     {
         swarmMode: false, 
         groups: 3, //amount of subgroups in the generated force. Grouped for similarity.
-        attackPowerUpperRangePercentage: 0.5, //Higher means harder for party
+        attackPowerUpperRangePercentage: 1.5, //Higher means harder for party
         attackPowerLowerRangePercentage: 0.5 //Lower means easier for party
     },
     party: 
@@ -165,7 +165,7 @@ var data =
             [
                 {
                     name: "Staff",
-                    range: 120,
+                    range: 150,
                     damage: 20
                 },
                 {
@@ -187,7 +187,7 @@ var data =
                 },
                 {
                     name: "Crossbow",
-                    range: 120,
+                    range: 100,
                     damage: 8
                 }
             ]
@@ -199,12 +199,12 @@ var data =
             [
                 {
                     name: "Greatsword",
-                    range: 15,
+                    range: 10,
                     damage: 17
                 },
                 {
-                    name: "Crossbow",
-                    range: 120,
+                    name: "Longbow",
+                    range: 200,
                     damage: 8
                 }
             ]

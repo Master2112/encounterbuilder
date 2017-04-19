@@ -13,7 +13,7 @@ function sendRequestButton()
                 $("#output").append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:412px;height:150px;background-color: ' + intToRGB(hashCode("stats")) + '">' + 
                 "<h2>Error</h2><br>" +
                 "Error: Timed out, probably no suitable opposition could be created.<br>" +
-                "Cause: Not enough units weak/strong enough to oppose party were found.<br>" +
+                "Cause: Not enough units weak/strong enough to oppose party were found, the number of groups is too high, or another input parameter is incorrectly set.<br>" +
                 '</div>');
     });
 }
@@ -77,7 +77,7 @@ function LoadData(dataJson)
                     $("#output").append('<div style="width: calc(80%);min-height:20%;margin:1%;border: 1px solid black;float:left;background-color: ' + intToRGB(hashCode("group" + i + 1000 * i)) + ';" id="group' + i + '"></div>');    
                     
                     $("#group" + i).append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:calc(100% - 12px);height:150px;background-color: ' + intToRGB(hashCode("stats" + i + 1000 * i)) + '">' + 
-                    "<h2>Group " + i + "</h2>" +
+                    "<h2>Group " + (i + 1) + "</h2>" +
                     "Group HP: " + data.data.groups[i].HP + "<br>" +
                     "Group Avg. Damage: " + data.data.groups[i].avgDamage + "<br>" +
                     "Group Avg. Range: " + data.data.groups[i].avgRange + "<br>" +

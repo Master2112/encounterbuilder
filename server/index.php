@@ -12,6 +12,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontex
 });
 
 $options;
+$maxUnitTypes = 1;
 
 try
 {
@@ -54,7 +55,7 @@ try
 
     if ($options->groups > 1)
     {
-        SetUnitGroup($result->generatedForce, $options->groups);
+        SetUnitGroup($result->generatedForce, min($options->groups, $maxUnitTypes));
     }
     else
     {
@@ -106,7 +107,7 @@ function GetGroupFromParty($party, $groupNum)
 
 function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
 {
-    global $party, $rangeAbove, $rangeBelow, $options;
+    global $party, $rangeAbove, $rangeBelow, $options, $maxUnitTypes;
 
     $i = -1;
     $removedFirst = false;
@@ -116,6 +117,8 @@ function GenerateArmy($units, $partyHP, $partyAvgDamage, $options)
     $iterations = 0;
 
     $units = FilterStrongAndWeakFromParty($units, $party);
+
+    $maxUnitTypes = count($units);
 
     $avgUnitDamage = GetPartyDamageAverage($units);
     $weakestUnit = GetLowestDamageMember($units);
@@ -213,8 +216,8 @@ function FilterStrongAndWeakFromParty($party, $opposition)
 
     $rangeBelow = max($rangeBelow, 0);
     $rangeAbove = max($rangeAbove, 0);
-    
-    $maxDamage = $avgDamage * (1 + $rangeAbove);
+
+    $maxDamage = $avgDamage * $rangeAbove;
     $minDamage = $avgDamage * $rangeBelow;
 
     $options->limits = new stdClass();
