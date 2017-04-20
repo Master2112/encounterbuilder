@@ -3,10 +3,12 @@
 function SetPartyTargets($party, $opposition, $groups)
 {
     $allHaveRoles = false;
+    $tries = 0;
 
-    while (!$allHaveRoles)
+    while (!$allHaveRoles && $tries < 100)
     {
         $allHaveRoles = true;
+        $tries++;
 
         SetRangedGroup($groups);
         SetTankGroup($groups);
@@ -19,11 +21,19 @@ function SetPartyTargets($party, $opposition, $groups)
         }
     }
 
-    $allHaveRoles = false;
+    for ($i = 0; $i < count($groups); $i++)
+    {
+        if (!isset($groups[$i]->role))
+            $groups[$i]->role = "None";
+    }
 
-    while (!$allHaveRoles)
+    $allHaveRoles = false;
+    $tries = 0;
+
+    while (!$allHaveRoles && $tries < 100)
     {
         $allHaveRoles = true;
+        $tries++;
 
         SetRangedUnit($opposition);
         SetTankUnit($opposition);
@@ -35,6 +45,12 @@ function SetPartyTargets($party, $opposition, $groups)
                 $allHaveRoles = false;
         }
     }
+
+    for ($i = 0; $i < count($opposition); $i++)
+    {
+        if (!isset($opposition[$i]->role))
+            $opposition[$i]->role = "None";
+    }
 }
 
 // Units
@@ -43,6 +59,7 @@ function SetRangedUnit($units)
 {
     $best = null;
     $bestValue = 0;
+    $worstValue = INF;
 
     for ($i = 0; $i < count($units); $i++)
     {
@@ -53,10 +70,13 @@ function SetRangedUnit($units)
                 $best = $units[$i];
                 $bestValue = $units[$i]->range->max;
             }
+
+            if ($units[$i]->range->max < $worstValue)
+                $worstValue = $units[$i]->range->max;
         }
     }
 
-    if ($best != null)
+    if ($best != null && $bestValue > $worstValue)
         $best->role = "Ranged";
 }
 
@@ -64,6 +84,7 @@ function SetDpsUnit($units)
 {
     $best = null;
     $bestValue = 0;
+    $worstValue = INF;
 
     for ($i = 0; $i < count($units); $i++)
     {
@@ -74,10 +95,13 @@ function SetDpsUnit($units)
                 $best = $units[$i];
                 $bestValue = $units[$i]->avgDamage;
             }
+
+            if ($units[$i]->avgDamage < $worstValue)
+                $worstValue = $units[$i]->avgDamage;
         }
     }
 
-    if ($best != null)
+    if ($best != null && $bestValue > $worstValue)
         $best->role = "Dps";
 }
 
@@ -85,6 +109,7 @@ function SetTankUnit($units)
 {
     $best = null;
     $bestValue = 0;
+    $worstValue = INF;
 
     for ($i = 0; $i < count($units); $i++)
     {
@@ -95,10 +120,13 @@ function SetTankUnit($units)
                 $best = $units[$i];
                 $bestValue = $units[$i]->hp;
             }
+
+            if ($units[$i]->hp < $worstValue)
+                $worstValue = $units[$i]->hp;
         }
     }
 
-    if ($best != null)
+    if ($best != null && $bestValue > $worstValue)
         $best->role = "Tank";
 }
 
@@ -108,6 +136,7 @@ function SetRangedGroup($groups)
 {
     $best = null;
     $bestValue = 0;
+    $worstValue = INF;
 
     for ($i = 0; $i < count($groups); $i++)
     {
@@ -118,10 +147,13 @@ function SetRangedGroup($groups)
                 $best = $groups[$i];
                 $bestValue = $groups[$i]->avgRange;
             }
+
+            if ($groups[$i]->avgRange < $worstValue)
+                $worstValue = $groups[$i]->avgRange;
         }
     }
 
-    if ($best != null)
+    if ($best != null && $bestValue > $worstValue)
         $best->role = "Ranged";
 }
 
@@ -129,6 +161,7 @@ function SetDpsGroup($groups)
 {
     $best = null;
     $bestValue = 0;
+    $worstValue = INF;
 
     for ($i = 0; $i < count($groups); $i++)
     {
@@ -139,10 +172,13 @@ function SetDpsGroup($groups)
                 $best = $groups[$i];
                 $bestValue = $groups[$i]->avgDamage;
             }
+
+            if ($groups[$i]->avgDamage < $worstValue)
+                $worstValue = $groups[$i]->avgDamage;
         }
     }
 
-    if ($best != null)
+    if ($best != null && $bestValue > $worstValue)
         $best->role = "Dps";
 }
 
@@ -150,6 +186,7 @@ function SetTankGroup($groups)
 {
     $best = null;
     $bestValue = 0;
+    $worstValue = INF;
 
     for ($i = 0; $i < count($groups); $i++)
     {
@@ -160,9 +197,12 @@ function SetTankGroup($groups)
                 $best = $groups[$i];
                 $bestValue = $groups[$i]->HP;
             }
+
+            if ($groups[$i]->HP < $worstValue)
+                $worstValue = $groups[$i]->HP;
         }
     }
 
-    if ($best != null)
+    if ($best != null && $bestValue > $worstValue)
         $best->role = "Tank";
 }
