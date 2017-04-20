@@ -2,9 +2,9 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type:application/json");
 
-require_once("clustering.php");
-require_once("partyGenerator.php");
-require_once("partyUtil.php");
+require_once("util/clustering.php");
+require_once("util/partyGenerator.php");
+require_once("util/partyUtil.php");
 
 set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) 
 {
