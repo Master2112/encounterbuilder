@@ -3,10 +3,12 @@
 function SetPartyTargets($party, $opposition, $groups)
 {
     $allHaveRoles = false;
+    $tries = 0;
 
-    while (!$allHaveRoles)
+    while (!$allHaveRoles && $tries < 100)
     {
         $allHaveRoles = true;
+        $tries++;
 
         SetRangedGroup($groups);
         SetTankGroup($groups);
@@ -19,11 +21,19 @@ function SetPartyTargets($party, $opposition, $groups)
         }
     }
 
-    $allHaveRoles = false;
+    for ($i = 0; $i < count($groups); $i++)
+    {
+        if (!isset($groups[$i]->role))
+            $groups[$i]->role = "None";
+    }
 
-    while (!$allHaveRoles)
+    $allHaveRoles = false;
+    $tries = 0;
+
+    while (!$allHaveRoles && $tries < 100)
     {
         $allHaveRoles = true;
+        $tries++;
 
         SetRangedUnit($opposition);
         SetTankUnit($opposition);
@@ -34,6 +44,12 @@ function SetPartyTargets($party, $opposition, $groups)
             if (!isset($opposition[$i]->role))
                 $allHaveRoles = false;
         }
+    }
+
+    for ($i = 0; $i < count($opposition); $i++)
+    {
+        if (!isset($opposition[$i]->role))
+            $opposition[$i]->role = "None";
     }
 }
 
