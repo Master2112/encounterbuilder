@@ -76,12 +76,13 @@ function LoadData(dataJson)
                 {
                     $("#output").append('<div style="width: calc(80%);min-height:20%;margin:1%;border: 1px solid black;float:left;background-color: ' + intToRGB(hashCode("group" + i + 1000 * i)) + ';" id="group' + i + '"></div>');    
                     
-                    $("#group" + i).append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:calc(100% - 12px);height:150px;background-color: ' + intToRGB(hashCode("stats" + i + 1000 * i)) + '">' + 
+                    $("#group" + i).append('<div style="float:left;padding:2px;border:1px solid black;margin:3px;width:calc(100% - 12px);height:160px;background-color: ' + intToRGB(hashCode("stats" + i + 1000 * i)) + '">' + 
                     "<h2>Group " + (i + 1) + "</h2>" +
                     "Group HP: " + data.data.groups[i].HP + "<br>" +
                     "Group Avg. Damage: " + data.data.groups[i].avgDamage + "<br>" +
                     "Group Avg. Range: " + data.data.groups[i].avgRange + "<br>" +
                     "Group Role: " + data.data.groups[i].role + "<br>" +
+                    "Group Target: " + (data.data.groups[i].target? data.data.groups[i].target.name + " (Role: " + data.data.groups[i].target.role + ")" : "No specific target.") + "<br>" +
                     '</div><br>')
                 }
 

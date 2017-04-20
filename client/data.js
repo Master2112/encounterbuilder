@@ -5,7 +5,7 @@ var data =
         swarmMode: false, 
         groups: 3, //amount of subgroups in the generated force. Grouped for similarity.
         attackPowerUpperRangePercentage: 1.5, //Higher means harder for party
-        attackPowerLowerRangePercentage: 0.5 //Lower means easier for party
+        attackPowerLowerRangePercentage: 0.3 //Lower means easier for party
     },
     party: 
     [
@@ -167,11 +167,18 @@ var data =
                     name: "Staff",
                     range: 150,
                     damage: 20
-                },
+                }
+            ]
+        },
+        {
+            name: "Archer",
+            hp: 30,
+            equipment: 
+            [
                 {
-                    name: "Dagger",
-                    range: 5,
-                    damage: 4
+                    name: "Longbow",
+                    range: 120,
+                    damage: 17
                 }
             ]
         },
@@ -184,11 +191,6 @@ var data =
                     name: "Longsword",
                     range: 5,
                     damage: 17
-                },
-                {
-                    name: "Crossbow",
-                    range: 100,
-                    damage: 8
                 }
             ]
         },
@@ -201,11 +203,6 @@ var data =
                     name: "Greatsword",
                     range: 10,
                     damage: 17
-                },
-                {
-                    name: "Longbow",
-                    range: 200,
-                    damage: 8
                 }
             ]
         },
