@@ -5,6 +5,7 @@ header("Content-Type:application/json");
 require_once("util/clustering.php");
 require_once("util/partyGenerator.php");
 require_once("util/partyUtil.php");
+require_once("util/partyMatcher.php");
 
 set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) 
 {
@@ -83,6 +84,10 @@ try
     }
 
     $result->data->input = $options;
+
+    SetPartyTargets($result->generatedForce, $party, $result->data->groups);
+
+    $result->data->input->party = $party;
 
     echo json_encode($result);
 }

@@ -81,6 +81,7 @@ function LoadData(dataJson)
                     "Group HP: " + data.data.groups[i].HP + "<br>" +
                     "Group Avg. Damage: " + data.data.groups[i].avgDamage + "<br>" +
                     "Group Avg. Range: " + data.data.groups[i].avgRange + "<br>" +
+                    "Group Role: " + data.data.groups[i].role + "<br>" +
                     '</div><br>')
                 }
 
