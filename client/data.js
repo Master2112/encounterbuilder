@@ -171,6 +171,78 @@ var data =
             ]
         },
         {
+            name: "Assassin",
+            hp: 20,
+            equipment: 
+            [
+                {
+                    name: "Poison Dagger",
+                    range: 4,
+                    damage: 27
+                }
+            ]
+        },
+        {
+            name: "Giant spider",
+            hp: 25,
+            equipment: 
+            [
+                {
+                    name: "Bite",
+                    range: 7,
+                    damage: 15
+                }
+            ]
+        },
+        {
+            name: "Veteran",
+            hp: 30,
+            equipment: 
+            [
+                {
+                    name: "Longsword",
+                    range: 5,
+                    damage: 17
+                }
+            ]
+        },
+        {
+            name: "Spearman",
+            hp: 20,
+            equipment: 
+            [
+                {
+                    name: "Spear",
+                    range: 60,
+                    damage: 17
+                }
+            ]
+        },
+        {
+            name: "Skeleton",
+            hp: 10,
+            equipment: 
+            [
+                {
+                    name: "Shortsword",
+                    range: 5,
+                    damage: 10
+                }
+            ]
+        },
+        {
+            name: "Zombie",
+            hp: 30,
+            equipment: 
+            [
+                {
+                    name: "Bite",
+                    range: 3,
+                    damage: 17
+                }
+            ]
+        },
+        {
             name: "Archer",
             hp: 30,
             equipment: 
