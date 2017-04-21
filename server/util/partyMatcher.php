@@ -5,7 +5,7 @@ function SetPartyTargets($party, $opposition, $groups)
     $allHaveRoles = false;
     $tries = 0;
 
-    while (!$allHaveRoles && $tries < 100)
+    while (!$allHaveRoles && $tries < 200)
     {
         $allHaveRoles = true;
         $tries++;
@@ -30,7 +30,7 @@ function SetPartyTargets($party, $opposition, $groups)
     $allHaveRoles = false;
     $tries = 0;
 
-    while (!$allHaveRoles && $tries < 100)
+    while (!$allHaveRoles && $tries < 200)
     {
         $allHaveRoles = true;
         $tries++;
@@ -124,10 +124,10 @@ function SetRangedUnit($units)
                 $best = $units[$i];
                 $bestValue = $units[$i]->range->max;
             }
-
-            if ($units[$i]->range->max < $worstValue)
-                $worstValue = $units[$i]->range->max;
         }
+
+        if ($units[$i]->range->max < $worstValue)
+            $worstValue = $units[$i]->range->max;
     }
 
     if ($best != null && $bestValue > $worstValue)
@@ -149,10 +149,10 @@ function SetDpsUnit($units)
                 $best = $units[$i];
                 $bestValue = $units[$i]->avgDamage;
             }
-
-            if ($units[$i]->avgDamage < $worstValue)
-                $worstValue = $units[$i]->avgDamage;
         }
+
+        if ($units[$i]->avgDamage < $worstValue)
+            $worstValue = $units[$i]->avgDamage;
     }
 
     if ($best != null && $bestValue > $worstValue)
@@ -174,10 +174,10 @@ function SetTankUnit($units)
                 $best = $units[$i];
                 $bestValue = $units[$i]->hp;
             }
-
-            if ($units[$i]->hp < $worstValue)
-                $worstValue = $units[$i]->hp;
         }
+
+        if ($units[$i]->hp < $worstValue)
+            $worstValue = $units[$i]->hp;
     }
 
     if ($best != null && $bestValue > $worstValue)
@@ -201,10 +201,10 @@ function SetRangedGroup($groups)
                 $best = $groups[$i];
                 $bestValue = $groups[$i]->avgRange;
             }
-
-            if ($groups[$i]->avgRange < $worstValue)
-                $worstValue = $groups[$i]->avgRange;
         }
+    
+        if ($groups[$i]->avgRange < $worstValue)
+            $worstValue = $groups[$i]->avgRange;
     }
 
     if ($best != null && $bestValue > $worstValue)
@@ -226,10 +226,10 @@ function SetDpsGroup($groups)
                 $best = $groups[$i];
                 $bestValue = $groups[$i]->avgDamage;
             }
-
-            if ($groups[$i]->avgDamage < $worstValue)
-                $worstValue = $groups[$i]->avgDamage;
         }
+
+        if ($groups[$i]->avgDamage < $worstValue)
+            $worstValue = $groups[$i]->avgDamage;
     }
 
     if ($best != null && $bestValue > $worstValue)
@@ -251,10 +251,10 @@ function SetTankGroup($groups)
                 $best = $groups[$i];
                 $bestValue = $groups[$i]->HP;
             }
-
-            if ($groups[$i]->HP < $worstValue)
-                $worstValue = $groups[$i]->HP;
         }
+        
+        if ($groups[$i]->HP < $worstValue)
+            $worstValue = $groups[$i]->HP;
     }
 
     if ($best != null && $bestValue > $worstValue)

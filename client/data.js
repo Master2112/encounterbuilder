@@ -11,7 +11,7 @@ var data =
     [
         {
             name: "Bob",
-            hp: 250,
+            hp: 180,
             equipment: 
             [
                 {
@@ -28,12 +28,12 @@ var data =
         },
         {
             name: "Sjon",
-            hp: 170,
+            hp: 80,
             equipment: 
             [
                 {
-                    name: "Stick",
-                    range: 5,
+                    name: "Longbow",
+                    range: 150,
                     damage: 10
                 },
                 {
@@ -57,16 +57,16 @@ var data =
         },
         {
             name: "Blubber",
-            hp: 190,
+            hp: 70,
             equipment: 
             [
                 {
-                    name: "Cannon",
+                    name: "Mage Staff",
                     range: 120,
                     damage: 15
                 },
                 {
-                    name: "Rapier",
+                    name: "Shortsword",
                     range: 5,
                     damage: 10
                 }
@@ -178,6 +178,18 @@ var data =
                 {
                     name: "Longbow",
                     range: 120,
+                    damage: 17
+                }
+            ]
+        },
+        {
+            name: "Footsoldier",
+            hp: 40,
+            equipment: 
+            [
+                {
+                    name: "Longsword",
+                    range: 5,
                     damage: 17
                 }
             ]
